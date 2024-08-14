@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lanciatore di dadi Magico di D&D</title>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Pirata+One&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'MedievalSharp', cursive;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s;
+            background-color: #f0e6d2; /* Light parchment color */
+            color: #2c1b0e; /* Dark brown text */
+        }
+        h1, h2, h3 {
+            font-family: 'Pirata One', cursive;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+        .dice-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .dice {
+            margin: 10px;
+            padding: 10px;
+            border: 2px solid #8b4513;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #deb887;
+        }
+        .result, .special-message {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .bonus-box, .custom-roll, .advantage-disadvantage {
+            margin: 20px 0;
+            padding: 10px;
+            border: 2px solid #8b4513;
+            border-radius: 5px;
+            background-color: #deb887;
+        }
+        button {
+            margin: 5px;
+            font-family: 'MedievalSharp', cursive;
+            background-color: #8b4513;
+            color: #f0e6d2;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #a0522d;
+        }
+        #roll-history {
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: #deb887;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        input[type="text"], input[type="number"] {
+            font-family: 'MedievalSharp', cursive;
+            background-color: #f0e6d2;
+            border: 1px solid #8b4513;
+            padding: 5px;
+        }
+        .dark-mode {
+            background-color: #2c1b0e;
+            color: #f0e6d2;
+        }
+        .dark-mode .dice, .dark-mode .bonus-box, .dark-mode .custom-roll, .dark-mode .advantage-disadvantage {
+            border-color: #deb887;
+            background-color: #3d2b1f;
+        }
+        .dark-mode button {
+            background-color: #deb887;
+            color: #2c1b0e;
+        }
+        .dark-mode button:hover {
+            background-color: #e9c496;
+        }
+        .dark-mode input[type="text"], .dark-mode input[type="number"] {
+            background-color: #3d2b1f;
+            color: #f0e6d2;
+            border-color: #deb887;
+        }
+        .rulebook-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #8b4513;
+            text-decoration: none;
+        }
+        .rulebook-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lanciatore di dadi Magico di D&D</h1>
+
+    <div class="dice-container">
+        <div class="dice">
+            <h2>d4</h2>
+            <button onclick="rollDice(4)">Lancia d4</button>
+            <div id="result-d4" class="result"></div>
+            <div id="special-message-d4" class="special-message"></div>
+        </div>
+
+        <div class="dice">
+            <h2>d6</h2>
+            <button onclick="rollDice(6)">Lancia d6</button>
+            <div id="result-d6" class="result"></div>
+            <div id="special-message-d6" class="special-message"></div>
+        </div>
+
+        <div class="dice">
+            <h2>d8</h2>
+            <button onclick="rollDice(8)">Lancia d8</button>
+            <div id="result-d8" class="result"></div>
+            <div id="special-message-d8" class="special-message"></div>
+        </div>
+
+        <div class="dice">
+            <h2>d10</h2>
+            <button onclick="rollDice(10)">Lancia d10</button>
+            <div id="result-d10" class="result"></div>
+            <div id="special-message-d10" class="special-message"></div>
+        </div>
+
+        <div class="dice">
+            <h2>d12</h2>
+            <button onclick="rollDice(12)">Lancia d12</button>
+            <div id="result-d12" class="result"></div>
+            <div id="special-message-d12" class="special-message"></div>
+        </div>
+
+        <div class="dice">
+            <h2>d20</h2>
+            <button onclick="rollDice(20)">Lancia d20</button>
+            <div id="result-d20" class="result"></div>
+            <div id="special-message-d20" class="special-message"></div>
+        </div>
+
+        <div class="dice">
+            <h2>d100</h2>
+            <button onclick="rollDice(100)">Lancia d100</button>
+            <div id="result-d100" class="result"></div>
+            <div id="special-message-d100" class="special-message"></div>
+        </div>
+    </div>
+
+    <div class="bonus-box">
+        Bonus: <input type="number" id="bonus-input" value="0">
+        <button onclick="applyBonus()">Applica Bonus</button>
+        <button onclick="clearInput('bonus-input')">Cancella Input</button>
+        <button onclick="clearBonusResult()">Cancella Risultato</button>
+
+        <div class="total-box">
+            Risultato totale: <span id="total-result" class="total-result">0</span>
+        </div>
+    </div>
+
+    <div class="custom-roll">
+        Tiro personalizzato: <input type="text" id="custom-roll-input" placeholder="e.g., 2d6+1d8+3">
+        <button onclick="rollCustom()">Lancia</button>
+        <button onclick="clearInput('custom-roll-input')">Cancella Input</button>
+        <button onclick="clearCustomRollResult()">Cancella Risultato</button>
+        <div id="custom-roll-result"></div>
+    </div>
+
+    <div class="advantage-disadvantage">
+        <button onclick="rollWithAdvantage()">Tiro con Vantaggio (2d20)</button>
+        <button onclick="rollWithDisadvantage()">Tiro con Svantaggio (2d20)</button>
+        <div id="advantage-disadvantage-result"></div>
+    </div>
+
+    <div class="control-buttons">
+        <button onclick="clearAllResults()">Pulisci tutti i risultati</button>
+        <button onclick="changeBackgroundColor()">Cambia colore sfondo</button>
+        <button onclick="resetBackgroundColor()">Ripristina colore sfondo</button>
+        <button onclick="toggleDarkMode()">Modalità Scura</button>
+    </div>
+
+    <div class="roll-history">
+        <h3>Cronologia dei tiri</h3>
+        <div id="roll-history"></div>
+    </div>
+
+    <a href="https://roll20.net/compendium/dnd5e/Index:Rules" target="_blank" class="rulebook-link">Consulta il Manuale delle Regole di D&D 5a Edizione</a>
+
+    <script>
+        function rollDice(sides) {
+            const result = Math.floor(Math.random() * sides) + 1;
+            updateResult(`d${sides}`, result);
+            checkSpecialResult(sides, result);
+            return result;
+        }
+
+        function updateResult(diceType, result) {
+            document.getElementById(`result-${diceType}`).textContent = result;
+            addToHistory(`${diceType}: ${result}`);
+            updateTotal(result);
+        }
+
+        function checkSpecialResult(sides, result) {
+            const messageElement = document.getElementById(`special-message-d${sides}`);
+            if (result === 1) {
+                messageElement.textContent = "Fallimento critico!";
+            } else if (result === sides) {
+                messageElement.textContent = "Successo critico!";
+            } else {
+                messageElement.textContent = "";
+            }
+        }
+
+        function updateTotal(result) {
+            const currentTotal = parseInt(document.getElementById('total-result').textContent) || 0;
+            document.getElementById('total-result').textContent = currentTotal + result;
+        }
+
+        function rollCustom() {
+            const input = document.getElementById('custom-roll-input').value;
+            const regex = /(\d+)d(\d+)([+-]\d+)?/g;
+            let total = 0;
+            let rollDetails = '';
+
+            let match;
+            while ((match = regex.exec(input)) !== null) {
+                const [, count, sides, modifier] = match;
+                let subtotal = 0;
+                for (let i = 0; i < parseInt(count); i++) {
+                    const roll = rollDice(parseInt(sides));
+                    subtotal += roll;
+                    rollDetails += `d${sides}: ${roll}, `;
+                }
+                if (modifier) {
+                    subtotal += parseInt(modifier);
+                }
+                total += subtotal;
+            }
+
+            const result = `Risultato: ${total} (${rollDetails.slice(0, -2)})`;
+            document.getElementById('custom-roll-result').textContent = result;
+            addToHistory(`Personalizzato: ${result}`);
+        }
+
+        function rollWithAdvantage() {
+            const roll1 = rollDice(20);
+            const roll2 = rollDice(20);
+            const result = Math.max(roll1, roll2);
+            const message = `Vantaggio: ${result} (Tiri: ${roll1}, ${roll2})`;
+            document.getElementById('advantage-disadvantage-result').textContent = message;
+            addToHistory(message);
+        }
+
+        function rollWithDisadvantage() {
+            const roll1 = rollDice(20);
+            const roll2 = rollDice(20);
+            const result = Math.min(roll1, roll2);
+            const message = `Svantaggio: ${result} (Tiri: ${roll1}, ${roll2})`;
+            document.getElementById('advantage-disadvantage-result').textContent = message;
+            addToHistory(message);
+        }
+
+        function applyBonus() {
+            const bonus = parseInt(document.getElementById('bonus-input').value) || 0;
+            const total = parseInt(document.getElementById('total-result').textContent) || 0;
+            document.getElementById('total-result').textContent = total + bonus;
+        }
+
+        function addToHistory(message) {
+            const history = document.getElementById('roll-history');
+            const entry = document.createElement('div');
+            entry.textContent = message;
+            history.insertBefore(entry, history.firstChild);
+        }
+
+        function clearAllResults() {
+            document.querySelectorAll('.result, .special-message').forEach(el => el.textContent = '');
+            document.getElementById('total-result').textContent = '0';
+            document.getElementById('custom-roll-result').textContent = '';
+            document.getElementById('advantage-disadvantage-result').textContent = '';
+            document.getElementById('roll-history').innerHTML = '';
+        }
+
+        function changeBackgroundColor() {
+            document.body.style.backgroundColor = `rgb(${Math.random()*255},${Math.random()*255},${Math.random()*255})`;
+        }
+
+        function resetBackgroundColor() {
+            document.body.style.backgroundColor = '';
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function clearInput(inputId) {
+            document.getElementById(inputId).value = '';
+            if (inputId === 'bonus-input') {
+                document.getElementById('bonus-input').value = '0';
+            }
+        }
+
+        function clearBonusResult() {
+            document.getElementById('total-result').textContent = '0';
+        }
+
+        function clearCustomRollResult() {
+            document.getElementById('custom-roll-result').textContent = '';
+        }
+    </script>
+</body>
+</html>
